@@ -66,9 +66,14 @@ Three routes, ordered by **how much they require** — the first one requires no
 
 | Route | What you do | Requires |
 |---|---|---|
-| **A · Folder** (recommended) | Download the release `.zip` → extract it anywhere → Settings → **Plugins** → **Add plugin** → give the **extracted folder path** | nothing |
+| **A · Folder** (recommended) | Download the release `.zip` → extract it anywhere → Settings → **Plugins** → **Add plugin** → give the **extracted folder path** | only the download — no `git`, no account |
 | **B · Local clone** | `git clone` this repo → Add plugin with the cloned folder path | `git` |
 | **C · GitHub spec** | Add plugin with `github:DiaryOfUranus/dsh-second-brain` | `git` on `PATH`, **and** reachable `github.com:443` + `codeload.github.com` |
+
+> **After** the download, route A is fully offline: the extracted folder needs no network, no `git` and no
+> account. Measured 2026-10-06 — the zip download itself failed once and succeeded later (`github.com:443`
+> is intermittent from the test host), while the folder install, the module load by package name, and a
+> build against a real brain all passed every time.
 
 **Restart DSH** afterwards — plugin modules load at boot, so editing files while the host is
 running does **not** hot-reload them.
