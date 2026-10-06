@@ -1,0 +1,25 @@
+# dsh-second-brain bundle patch
+#
+# Registers the Xianshu second-brain loader as one profile row. The plugin
+# injects a BOUNDED, TIMESTAMPED snapshot into every session's prompt context
+# via `ctx.systemPrompt.context({ name, order, text })`.
+#
+# Safety posture (v0.1.4):
+#   - `DEEPSEEK_BRAIN`   brain root (default ~/.dsh/brain)
+#   - INSTALLED == ON. Disable explicitly here with `inject: false`.
+#     (v0.1.0 defaulted to OFF, which was backwards: "installed but inert" is a
+#      foot-gun — the GUI install decision already IS the consent. Observed
+#      2026-10-05: env was empty in all three scopes ⇒ it never injected.)
+#   - `maxChars` 1300 (floor 300 ⇒ REFUSED below it). Raised from 1000 after the
+#     first live block showed only 2 discipline items fit: section 一 (identity)
+#     cannot shrink, so the cap must carry 三 as well.
+#   - read-only: the plugin never writes the brain
+#   - NOTE: editing this repo does NOT reload a running host. A restart is
+#     required before a code/patch change takes effect (observed 2026-10-05).
+- insert:
+    - id: second-brain-xianshu
+      name: '@xianshu/dsh-second-brain'
+      config:
+        brainRoot: !!js process.env.DEEPSEEK_BRAIN
+        maxChars: 1300
+        order: 200
