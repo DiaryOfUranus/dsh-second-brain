@@ -36,6 +36,20 @@
 - 本机以 `link:` 安装的副本若仍是 0.1.3，须同步文件并**重启 DSH** 才生效
   （插件模块在 boot 时加载，不热重载）。
 
+### Corrected after publication — 2026-10-06
+
+- **安装入口写错了，已更正。** 发布时 README 与 Release 说明推荐的裸写法
+  `github:DiaryOfUranus/dsh-second-brain` **当时从未被真正走通一次**；发布后才走，发现它
+  **在本机直接失败**：
+  ① `git` 不在 `PATH` ⇒ `pnpm` 报 `'git' 不是内部或外部命令`（本机其实装了 PortableGit，
+     只是没进 PATH）；
+  ② 把 `git` 加回 `PATH` 后**仍失败**于 `Failed to connect to github.com:443 after 21075 ms`
+     （Windows 侧到 github.com 间歇性不通；WSL 侧可通）；
+  ③ **固定完整 commit SHA 也绕不开**——pnpm 对 `github:` 一律走 git fetcher（实测否定了我原先
+     「固定 SHA 即可免 git」的推断）。
+  ⇒ README（中英双语）改为：**零前置条件的「下载 zip → 解压 → 添加插件填目录」列为路线 A**，
+  `github:` 降为路线 C 并**写明前置条件**；Release 说明同步更正。**代码未改动。**
+
 ## v0.1.3 — 2026-10-05
 - 压缩时**丢弃引用块（`>`）与标题行**：它们是给维护者的忠告，不是纪律；旧版把它们一起塞进
   注入块 ⇒ **说明文字把真条目挤出预算**（同一病的第二形态）。

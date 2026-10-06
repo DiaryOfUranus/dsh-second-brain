@@ -61,29 +61,36 @@
 
 ## 安装
 
-### 方式 A —— 从 GitHub 安装（推荐）
+三条路，按**前置条件从少到多**排列——第一条什么都不需要。
 
-桌面版 → 设置 → **插件** → **添加插件**，填其一：
+| 路线 | 怎么做 | 需要什么 |
+|---|---|---|
+| **A · 目录**（推荐） | 下载 Release 的 `.zip` → 解压到任意位置 → 设置 → **插件** → **添加插件** → 填**解压后的文件夹路径** | **什么都不需要** |
+| **B · 本地克隆** | `git clone` 本仓 → 添加插件时填克隆出的文件夹路径 | `git` |
+| **C · GitHub 源** | 添加插件时填 `github:DiaryOfUranus/dsh-second-brain` | `git` 在 `PATH` 里，**且** `github.com:443` 与 `codeload.github.com` 可通 |
+
+★ **装完须重启 DSH**——插件模块在 boot 时加载；宿主运行中改文件**不会**热重载（实测）。
+
+### 为什么 C 排在最后（实测，不是推测）
+
+`github:` 这种写法由包管理器解析，而它会去调 `git`：
 
 ```text
-github:DiaryOfUranus/dsh-second-brain
+$ pnpm add github:DiaryOfUranus/dsh-second-brain
+[ERROR] Command failed: git ls-remote "https://github.com/DiaryOfUranus/dsh-second-brain.git" HEAD
+'git' 不是内部或外部命令，也不是可运行的程序或批处理文件
 ```
 
-或本机克隆目录：
+Windows 实测（2026-10-06）：`git` 不在 `PATH` 时**立刻失败**；把 `git` 加回 `PATH` 后**仍失败**于
+`Failed to connect to github.com:443 after 21075 ms`。**固定完整 commit SHA 也绕不开**——pnpm 对
+`github:` 一律走 git fetcher。而路线 A 完全不碰这些。
 
-```text
-C:\path\to\dsh-second-brain
-```
+> **更正说明**：v0.1.4 的 Release 说明、以及 v0.1.4 附件包内的 README，曾推荐裸 `github:` 写法且
+> 未写明前置条件。**以本节为准。**
 
-★ **装完须重启 DSH**——插件模块在 boot 时加载；宿主运行中改仓库文件**不会**热重载（实测）。
+### bundle 契约
 
-### 方式 B —— 克隆到本机再用目录安装
-
-```bash
-git clone https://github.com/DiaryOfUranus/dsh-second-brain.git
-```
-
-bundle 由 `package.json` → `dsh.bundle.patch` → `cordis.patch.yml` 声明，向 profile 插入一行：
+无论走哪条路，bundle 都由 `package.json` → `dsh.bundle.patch` → `cordis.patch.yml` 声明，插入一行：
 
 ```yaml
 - insert:

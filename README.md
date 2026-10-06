@@ -62,31 +62,39 @@ remembers to go read it. This plugin closes that gap at the only place that alwa
 
 ## Install
 
-### Option A — from GitHub (recommended)
+Three routes, ordered by **how much they require** — the first one requires nothing at all.
 
-Settings → **Plugins** → **Add plugin**, and give one of:
+| Route | What you do | Requires |
+|---|---|---|
+| **A · Folder** (recommended) | Download the release `.zip` → extract it anywhere → Settings → **Plugins** → **Add plugin** → give the **extracted folder path** | nothing |
+| **B · Local clone** | `git clone` this repo → Add plugin with the cloned folder path | `git` |
+| **C · GitHub spec** | Add plugin with `github:DiaryOfUranus/dsh-second-brain` | `git` on `PATH`, **and** reachable `github.com:443` + `codeload.github.com` |
 
-```
-github:DiaryOfUranus/dsh-second-brain
-```
+**Restart DSH** afterwards — plugin modules load at boot, so editing files while the host is
+running does **not** hot-reload them.
 
-or the local clone path:
+### Why route C is listed last (measured, not assumed)
 
-```
-C:\path\to\dsh-second-brain
-```
+The `github:` form is resolved by the package manager, which shells out to `git`:
 
-**Restart DSH** afterwards — plugin modules load at boot, editing the repo while the host runs
-does not hot-reload it.
-
-### Option B — local directory clone
-
-```bash
-git clone https://github.com/DiaryOfUranus/dsh-second-brain.git
+```text
+$ pnpm add github:DiaryOfUranus/dsh-second-brain
+[ERROR] Command failed: git ls-remote "https://github.com/DiaryOfUranus/dsh-second-brain.git" HEAD
+'git' is not recognized as an internal or external command
 ```
 
-then point the plugin installer at the cloned folder. The bundle is declared by
-`package.json` → `dsh.bundle.patch` → `cordis.patch.yml`, which inserts one profile row:
+Measured on Windows (2026-10-06): with `git` absent from `PATH` it fails immediately; with `git`
+present it failed again at `Failed to connect to github.com:443 after 21075 ms`. **Pinning a full
+commit SHA does not avoid this** — pnpm still routes every `github:` spec through its git fetcher.
+Route A touches none of that.
+
+> **Correction.** The v0.1.4 release notes and the README inside the v0.1.4 asset zip recommended
+> the bare `github:` form without stating its prerequisites. **This section supersedes them.**
+
+### Bundle contract
+
+Whichever route you take, the bundle is declared by `package.json` → `dsh.bundle.patch` →
+`cordis.patch.yml`, which inserts one profile row:
 
 ```yaml
 - insert:
