@@ -1,0 +1,15 @@
+# deps / build
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+
+# probe / temp artifacts
+.sbx-*
+tmp/
+*.tmp
+
+# logs / OS noise
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
