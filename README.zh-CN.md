@@ -7,7 +7,7 @@
 > **标签：记忆 · 工作流 · 本地优先 · 隐私优先 · DSH 插件。**
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![version](https://img.shields.io/badge/version-0.1.4-blue.svg)](CHANGELOG.md)
+[![npm version](https://img.shields.io/npm/v/@xianshu/dsh-second-brain.svg)](https://www.npmjs.com/package/@xianshu/dsh-second-brain)
 [![dsh-plugin](https://img.shields.io/badge/DeepSeek%20Harness-plugin-4B6EF5.svg)](#安装)
 [![node](https://img.shields.io/badge/node-%3E%3D18-3c873a.svg)](#安装)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
