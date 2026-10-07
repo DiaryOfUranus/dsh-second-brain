@@ -5,6 +5,31 @@
 > v0.1.0–v0.1.3 的条目依**代码注释与插件自述重建**（该三期未随仓库发布）；
 > **v0.1.4 为首次公开发布**，条目为本次实测。
 
+## v0.1.5 — 2026-10-07
+
+### Added
+- **npm 发布**：`@xianshu/dsh-second-brain@0.1.5` 已上架 `registry.npmjs.org`（MIT / public）。
+  入口终于**不需要 `git`、也不需要 `github.com`**。在**当初旧入口失败的那台主机**（`git` 不在 `PATH`、
+  `github.com:443` 不通）端到端实测走通：
+  `pnpm add @xianshu/dsh-second-brain`（npm 官方源 ✅ ／ npmmirror 淘宝源 ✅）
+  → 按包名 `import` 成功（`name=second-brain-xianshu`）
+  → 对真脑构建注入块 **844 字符**（「以现读为准」边界行与 `state_seq` 指纹均在）
+  → 包内 `test/probe-block.mjs` **48/48 PASS**。
+- **`test/` 纳入发布包**：此前 `files` 未含 `test/`，而 `scripts.test` 指向 `test/probe-block.mjs`
+  ⇒ **装上包的人跑 `npm test` 会直接失败**。今修。tarball 21,392 B / 8 件。
+
+### Changed
+- README（中英）安装段改为**四条路按前置条件排序**：npm 居首（不需 git、不需 github.com），
+  目录次之，本地克隆再次，`github:` 降为**路线 D** 并写明前置条件；新增「入口是走通的」实测区块。
+- 版本号 0.1.4 → 0.1.5，使 **npm 版本 == git tag == main** 三者一致（v0.1.4 时 tag 内还是旧文档）。
+
+### 诚实边界
+- **「在 GUI 里点添加插件」这一步未实机执行**——那会改动作者 profile（＝控制面）。已实证的是**其底层
+  机制**：`pnpm add <包名>` 的解析与安装、按包名导入、对真脑构建、包内探针，全通过。
+- npm 侧另存在一个 `0.0.0-stage` 版本，其自述为 *"Temporary package placeholder for staged
+  publishing"* —— 系 **npm 分阶段发布机制自动产生的占位版本**（时间线：占位 00:16:47Z → 0.1.5 于
+  00:18:04Z），非人为多发；`dist-tags.latest` 指向 `0.1.5`，安装不受影响。
+
 ## v0.1.4 — 2026-10-06
 
 发布前验收探针逮出的**两条"静默出错"缺陷**修复（与 v0.1.1–v0.1.3 同一病根：

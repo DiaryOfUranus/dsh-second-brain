@@ -61,21 +61,37 @@
 
 ## 安装
 
-三条路，按**前置条件从少到多**排列——第一条什么都不需要。
+四条路，按**前置条件从少到多**排列——第一条既不需要 `git`，也不需要 `github.com`。
 
 | 路线 | 怎么做 | 需要什么 |
 |---|---|---|
-| **A · 目录**（推荐） | 下载 Release 的 `.zip` → 解压到任意位置 → 设置 → **插件** → **添加插件** → 填**解压后的文件夹路径** | **只需能下载这个 zip**（不需 `git`、不需账号） |
-| **B · 本地克隆** | `git clone` 本仓 → 添加插件时填克隆出的文件夹路径 | `git` |
-| **C · GitHub 源** | 添加插件时填 `github:DiaryOfUranus/dsh-second-brain` | `git` 在 `PATH` 里，**且** `github.com:443` 与 `codeload.github.com` 可通 |
-
-★ 下载完成**之后**，路线 A 全程离线：解压出的文件夹不需要网络、不需要 `git`、不需要账号。
-（2026-10-06 实测：`github.com:443` 在测试主机上间歇性不通——zip 下载失败过一次、后来成功过；
-而「填目录安装、按包名加载模块、对真脑构建注入块」三项每次都通过。）
+| **A · npm**（推荐） | 设置 → **插件** → **添加插件** → `@xianshu/dsh-second-brain` | 能连上 npm registry —— **不需 `git`、不需 `github.com`** |
+| **B · 目录** | 下载 Release 的 `.zip` → 解压 → 添加插件填**解压后的文件夹路径** | 只需能下载这个 zip |
+| **C · 本地克隆** | `git clone` 本仓 → 添加插件时填克隆出的文件夹路径 | `git` |
+| **D · GitHub 源** | 添加插件时填 `github:DiaryOfUranus/dsh-second-brain` | `git` 在 `PATH` 里，**且** `github.com:443` 与 `codeload.github.com` 可通 |
 
 ★ **装完须重启 DSH**——插件模块在 boot 时加载；宿主运行中改文件**不会**热重载（实测）。
 
-### 为什么 C 排在最后（实测，不是推测）
+### 入口是走通的（实测，不是宣称）
+
+路线 A 在**一台 `git` 不在 `PATH`、且 `github.com:443` 不通**的 Windows 主机上端到端走通——
+也就是当初旧入口失败的那台机器：
+
+```text
+$ pnpm add @xianshu/dsh-second-brain            # npm 官方源
++ @xianshu/dsh-second-brain 0.1.5                ✅
+$ pnpm add @xianshu/dsh-second-brain            # npmmirror 淘宝源也供得上
++ @xianshu/dsh-second-brain 0.1.5                ✅
+$ node -e "import('@xianshu/dsh-second-brain')"
+name=second-brain-xianshu  inject=["systemPrompt"]  ✅
+$ node node_modules/@xianshu/dsh-second-brain/test/probe-block.mjs
+结论: 48/48 PASS                                 ✅
+```
+
+路线 B 另测：`pnpm link:<解压目录>` 能正确解析包名、`cordis.patch.yml` 在、按包名导入并对真脑
+构建出 844 字符的注入块。
+
+### 为什么 D 排在最后（实测，不是推测）
 
 `github:` 这种写法由包管理器解析，而它会去调 `git`：
 
@@ -87,7 +103,7 @@ $ pnpm add github:DiaryOfUranus/dsh-second-brain
 
 Windows 实测（2026-10-06）：`git` 不在 `PATH` 时**立刻失败**；把 `git` 加回 `PATH` 后**仍失败**于
 `Failed to connect to github.com:443 after 21075 ms`。**固定完整 commit SHA 也绕不开**——pnpm 对
-`github:` 一律走 git fetcher。而路线 A 完全不碰这些。
+`github:` 一律走 git fetcher。而 A、B 两条路完全不碰这些。
 
 > **更正说明**：v0.1.4 的 Release 说明、以及 v0.1.4 附件包内的 README，曾推荐裸 `github:` 写法且
 > 未写明前置条件。**以本节为准。**

@@ -1,6 +1,6 @@
 {
   "name": "@xianshu/dsh-second-brain",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "DeepSeek Harness (DSH) plugin: injects a bounded, timestamped snapshot of your local Second Brain (identity + state fingerprint + pointers) into every new session's prompt. Read-only, zero-write, fail-loud, zero dependencies. 第二大脑载入器：让每个新会话开局自带记忆快照。",
   "type": "module",
   "main": "lib/index.js",
@@ -13,6 +13,7 @@
   },
   "files": [
     "lib",
+    "test",
     "cordis.patch.yml",
     "README.md",
     "README.zh-CN.md",

@@ -62,23 +62,38 @@ remembers to go read it. This plugin closes that gap at the only place that alwa
 
 ## Install
 
-Three routes, ordered by **how much they require** — the first one requires nothing at all.
+Four routes, ordered by **how much they require** — the first needs neither `git` nor `github.com`.
 
 | Route | What you do | Requires |
 |---|---|---|
-| **A · Folder** (recommended) | Download the release `.zip` → extract it anywhere → Settings → **Plugins** → **Add plugin** → give the **extracted folder path** | only the download — no `git`, no account |
-| **B · Local clone** | `git clone` this repo → Add plugin with the cloned folder path | `git` |
-| **C · GitHub spec** | Add plugin with `github:DiaryOfUranus/dsh-second-brain` | `git` on `PATH`, **and** reachable `github.com:443` + `codeload.github.com` |
-
-> **After** the download, route A is fully offline: the extracted folder needs no network, no `git` and no
-> account. Measured 2026-10-06 — the zip download itself failed once and succeeded later (`github.com:443`
-> is intermittent from the test host), while the folder install, the module load by package name, and a
-> build against a real brain all passed every time.
+| **A · npm** (recommended) | Settings → **Plugins** → **Add plugin** → `@xianshu/dsh-second-brain` | a reachable npm registry — **no `git`, no `github.com`** |
+| **B · Folder** | Download the release `.zip` → extract → Add plugin with the **extracted folder path** | only the download |
+| **C · Local clone** | `git clone` this repo → Add plugin with the cloned folder path | `git` |
+| **D · GitHub spec** | Add plugin with `github:DiaryOfUranus/dsh-second-brain` | `git` on `PATH`, **and** reachable `github.com:443` + `codeload.github.com` |
 
 **Restart DSH** afterwards — plugin modules load at boot, so editing files while the host is
 running does **not** hot-reload them.
 
-### Why route C is listed last (measured, not assumed)
+### Verified entrances (walked, not assumed)
+
+Route A was walked end to end on a Windows host with **no `git` on `PATH` and `github.com:443`
+unreachable** — the very machine where the old entry failed:
+
+```text
+$ pnpm add @xianshu/dsh-second-brain                 # official npm registry
++ @xianshu/dsh-second-brain 0.1.5                     ✅
+$ pnpm add @xianshu/dsh-second-brain                 # npmmirror (CN mirror) served it too
++ @xianshu/dsh-second-brain 0.1.5                     ✅
+$ node -e "import('@xianshu/dsh-second-brain')"
+name=second-brain-xianshu  inject=["systemPrompt"]    ✅
+$ node node_modules/@xianshu/dsh-second-brain/test/probe-block.mjs
+结论: 48/48 PASS                                      ✅
+```
+
+Route B was verified separately: `pnpm link:<extracted folder>` resolves the package name,
+`cordis.patch.yml` is present, and importing by package name builds a real 844-char block.
+
+### Why route D is listed last (measured, not assumed)
 
 The `github:` form is resolved by the package manager, which shells out to `git`:
 
@@ -91,7 +106,7 @@ $ pnpm add github:DiaryOfUranus/dsh-second-brain
 Measured on Windows (2026-10-06): with `git` absent from `PATH` it fails immediately; with `git`
 present it failed again at `Failed to connect to github.com:443 after 21075 ms`. **Pinning a full
 commit SHA does not avoid this** — pnpm still routes every `github:` spec through its git fetcher.
-Route A touches none of that.
+Routes A and B touch none of that.
 
 > **Correction.** The v0.1.4 release notes and the README inside the v0.1.4 asset zip recommended
 > the bare `github:` form without stating its prerequisites. **This section supersedes them.**
